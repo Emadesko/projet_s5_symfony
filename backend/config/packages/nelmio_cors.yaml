@@ -1,12 +1,11 @@
 nelmio_cors:
     defaults:
-        origin_regex: true
-        allow_origin: ['http://localhost:5500']
-        allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
-        allow_headers: ['Content-Type', 'Authorization']
-        expose_headers: ['Link']
-        max_age: 3600
+        allow_origin: ['http://127.0.0.1:5500']   # Remplacez par l'URL de votre frontend
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']  # Méthodes HTTP autorisées
+        allow_headers: ['Content-Type', 'Authorization']  # En-têtes autorisés
+        expose_headers: []  # (optionnel) En-têtes que le client peut voir
+        max_age: 3600  # Durée maximale de mise en cache (en secondes)
+        allow_credentials: true  # Autorise les cookies ou headers d'authentification
     paths:
-        '^/': null
-        '^/api/': 
-            allow_origin : ['http://localhost:5500']
+        '^/':  # Applique cette configuration à toutes les routes de l'API
+            allow_origin: ['http://127.0.0.1:5500']  # URL autorisée pour l'accès

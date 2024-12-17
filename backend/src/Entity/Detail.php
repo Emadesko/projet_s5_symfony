@@ -38,6 +38,11 @@ class Detail
     #[ORM\JoinColumn(nullable: false)]
     private ?dette $dette = null;
 
+    public function __construct(){
+        $this->createAt = new \DateTime;
+        $this->updateAt = new \DateTime;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

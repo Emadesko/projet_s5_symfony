@@ -43,7 +43,10 @@ class Demande
     public function __construct()
     {
         $this->detailDemandes = new ArrayCollection();
+        $this->createAt = new \DateTime;
+        $this->updateAt = new \DateTime;
     }
+
 
     public function getId(): ?int
     {

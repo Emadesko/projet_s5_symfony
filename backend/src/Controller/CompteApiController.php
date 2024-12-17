@@ -13,8 +13,6 @@ class CompteApiController extends AbstractController
     public function index(CompteRepository $compteRepository): JsonResponse
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/CompteApiController.php',
             'datas' => $compteRepository->findAll(),
         ]);
     }

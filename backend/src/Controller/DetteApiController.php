@@ -13,8 +13,6 @@ class DetteApiController extends AbstractController
     public function index(DetteRepository $detteRepository): JsonResponse
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/DetteApiController.php',
             'datas' => $detteRepository->findAll(),
         ]);
     }

@@ -29,7 +29,7 @@ class Dette
     #[ORM\Column(name:"isSolde")]
     private ?bool $isSolde = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: "montantVerser")]
     private ?float $montantVerser = null;
 
     #[ORM\ManyToOne(inversedBy: 'dettes')]
@@ -52,6 +52,8 @@ class Dette
     {
         $this->paiements = new ArrayCollection();
         $this->details = new ArrayCollection();
+        $this->createAt = new \DateTime;
+        $this->updateAt = new \DateTime;
     }
 
     public function getId(): ?int

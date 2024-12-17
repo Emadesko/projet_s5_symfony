@@ -51,6 +51,8 @@ class Article
     {
         $this->details = new ArrayCollection();
         $this->detailDemandes = new ArrayCollection();
+        $this->createAt = new \DateTime;
+        $this->updateAt = new \DateTime;
     }
 
     public function getId(): ?int

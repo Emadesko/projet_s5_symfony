@@ -13,8 +13,6 @@ class DemandeApiController extends AbstractController
     public function index(DemandeRepository $demandeRepository): JsonResponse
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/DemandeApiController.php',
             'datas' => $demandeRepository->findAll(),
         ]);
     }

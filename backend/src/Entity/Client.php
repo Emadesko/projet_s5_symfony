@@ -51,6 +51,8 @@ class Client
     {
         $this->demandes = new ArrayCollection();
         $this->dettes = new ArrayCollection();
+        $this->createAt = new \DateTime;
+        $this->updateAt = new \DateTime;
     }
 
     public function getId(): ?int

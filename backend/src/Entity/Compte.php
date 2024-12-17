@@ -43,6 +43,12 @@ class Compte
     #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"updateAt")]
     private ?\DateTimeInterface $updateAt = null;
 
+    public function __construct()
+    {
+        $this->createAt = new \DateTime;
+        $this->updateAt = new \DateTime;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -13,8 +13,6 @@ class PaiementApiController extends AbstractController
     public function index(PaiementRepository $paiementRepository): JsonResponse
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/PaiementApiController.php',
             'datas' => $paiementRepository->findAll(),
         ]);
     }

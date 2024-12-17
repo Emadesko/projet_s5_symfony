@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
+#[ORM\Table(name:"clients")]
 class Client
 {
     #[ORM\Id]
@@ -19,16 +20,16 @@ class Client
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"createAt")]
+    private ?\DateTime $createAt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $surname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $telephone = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name:"updateAt")]
     private ?\DateTimeInterface $updateAt = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]

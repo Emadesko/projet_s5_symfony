@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DetailDemandeRepository::class)]
+#[ORM\Table(name:"details_demande")]
 class DetailDemande
 {
     #[ORM\Id]
@@ -14,8 +15,8 @@ class DetailDemande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"createAt")]
+    private ?\DateTime $createAt = null;
 
     #[ORM\Column]
     private ?float $prix = null;
@@ -26,7 +27,7 @@ class DetailDemande
     #[ORM\Column]
     private ?float $total = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"updateAt")]
     private ?\DateTimeInterface $updateAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'detailDemandes')]

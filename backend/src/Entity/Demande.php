@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Etat;
 use App\Repository\DemandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DemandeRepository::class)]
+#[ORM\Table(name:"demandes")]
 class Demande
 {
     #[ORM\Id]
@@ -16,13 +18,13 @@ class Demande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"createAt")]
+    private ?\DateTime $createAt = null;
 
     #[ORM\Column]
     private ?float $montant = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"updateAt")]
     private ?\DateTimeInterface $updateAt = null;
 
     #[ORM\Column]
@@ -84,14 +86,14 @@ class Demande
         return $this;
     }
 
-    public function getEtat(): ?int
+    public function getEtat(): ?Etat
     {
-        return $this->etat;
+        return Etat::from($this->etat);
     }
 
-    public function setEtat(int $etat): static
+    public function setEtat(Etat $etat): static
     {
-        $this->etat = $etat;
+        $this->etat = $etat->value;
 
         return $this;
     }

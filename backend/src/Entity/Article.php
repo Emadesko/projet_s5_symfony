@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
+#[ORM\Table(name:"articles")]
 class Article
 {
     #[ORM\Id]
@@ -16,22 +17,22 @@ class Article
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name:"createAt")]
+    private ?\DateTime $createAt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $libelle = null;
 
     #[ORM\Column]
     private ?float $prix = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name:"qteStock")]
     private ?int $qteStock = null;
 
     #[ORM\Column(length: 255)]
     private ?string $reference = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, name:"updateAt")]
     private ?\DateTimeInterface $updateAt = null;
 
     /**

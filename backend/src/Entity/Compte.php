@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Enum\Role;
 use App\Repository\CompteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CompteRepository::class)]
+#[ORM\Table(name:"comptes")]
 class Compte
 {
     #[ORM\Id]
@@ -14,16 +16,16 @@ class Compte
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"createAt")]
+    private ?\DateTime $createAt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name:"isActive")]
     private ?bool $isActive = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $login = null;
 
     #[ORM\Column(length: 255)]
@@ -38,7 +40,7 @@ class Compte
     #[ORM\Column]
     private ?int $role = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE,name:"updateAt")]
     private ?\DateTimeInterface $updateAt = null;
 
     public function getId(): ?int
@@ -130,14 +132,14 @@ class Compte
         return $this;
     }
 
-    public function getRole(): ?int
+    public function getRole(): ?Role
     {
-        return $this->role;
+        return Role::from($this->role);
     }
 
-    public function setRole(int $role): static
+    public function setRole(Role $role): static
     {
-        $this->role = $role;
+        $this->role = $role->value;
 
         return $this;
     }

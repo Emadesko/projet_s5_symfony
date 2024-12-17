@@ -34,14 +34,29 @@ class ArticleRepository extends ServiceEntityRepository
 
     public function articlesRupture(int $page, int $limit,int $qte, string $libelle): Paginator
     {
-
         $query = $this->createQueryBuilder('a')
-            ->where('a.qteStock <= :qteStock');
+            ->where('a.qteStock <= :qte');
         if ($libelle != "") {
             $query->andWhere('a.libelle like :libelle')
                 ->setParameter('libelle',$libelle.'%');
         }
-        $query->setParameter('qteStock',$qte)
+        $query->setParameter('qte',$qte)
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->orderBy('a.id', 'ASC')
+            ->getQuery();
+        return new Paginator($query);
+    }
+
+    public function articlesDispo(int $page, int $limit,int $qte, string $libelle): Paginator
+    {
+        $query = $this->createQueryBuilder('a')
+            ->where('a.qteStock > :qte');
+        if ($libelle != "") {
+            $query->andWhere('a.libelle like :libelle')
+                ->setParameter('libelle',$libelle.'%');
+        }
+        $query->setParameter('qte',$qte)
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)
             ->orderBy('a.id', 'ASC')

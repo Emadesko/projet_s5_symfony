@@ -10,6 +10,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ArticleApiController extends AbstractController
 {
+
+
     #[Route('/article/api', name: 'app_article_get')]
     public function index(ArticleRepository $articleRepository, Request $request): JsonResponse
     {
@@ -37,6 +39,26 @@ class ArticleApiController extends AbstractController
         $libelle=$request->get('libelle',"");
         $qteStock=$request->get('qteStock',10);
         $articles = $articleRepository->articlesRupture($page,$limit,$qteStock,$libelle);
+        $count = $articles->count();
+        $maxPage = ceil($count / $limit);
+        return $this->json([
+            'datas' => $articles,
+            'qteStock' => $qteStock,
+            'libelle' => $libelle,
+            'page' => $page,
+            'maxPage' => $count,
+        ]);
+    }
+
+    #[Route('/article/api/dispo', name: 'app_article_get')]
+    public function getArticlesDispo(ArticleRepository $articleRepository, Request $request): JsonResponse
+    {
+        $page = $request->query->getInt('page', 1);
+        $limit = 6;
+        $articles=[];
+        $libelle=$request->get('libelle',"");
+        $qteStock=$request->get('qteStock',10);
+        $articles = $articleRepository->articlesDispo($page,$limit,$qteStock,$libelle);
         $count = $articles->count();
         $maxPage = ceil($count / $limit);
         return $this->json([

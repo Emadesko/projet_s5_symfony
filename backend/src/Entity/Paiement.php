@@ -26,7 +26,7 @@ class Paiement
 
     #[ORM\ManyToOne(inversedBy: 'paiements')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?dette $dette = null;
+    private ?Dette $dette = null;
 
     public function __construct()
     {
@@ -75,12 +75,12 @@ class Paiement
         return $this;
     }
 
-    public function getDette(): ?dette
+    public function getDette(): ?Dette
     {
         return $this->dette;
     }
 
-    public function setDette(?dette $dette): static
+    public function setDette(?Dette $dette): static
     {
         $this->dette = $dette;
 

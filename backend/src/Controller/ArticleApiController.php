@@ -30,7 +30,7 @@ class ArticleApiController extends AbstractController
         ]);
     }
 
-    #[Route('/article/api/rupture', name: 'app_article_get')]
+    #[Route('/article/api/rupture', name: 'app_article_rupture')]
     public function getArticlesRupture(ArticleRepository $articleRepository, Request $request): JsonResponse
     {
         $page = $request->query->getInt('page', 1);
@@ -50,7 +50,7 @@ class ArticleApiController extends AbstractController
         ]);
     }
 
-    #[Route('/article/api/dispo', name: 'app_article_get')]
+    #[Route('/article/api/dispo', name: 'app_article_df')]
     public function getArticlesDispo(ArticleRepository $articleRepository, Request $request): JsonResponse
     {
         $page = $request->query->getInt('page', 1);

@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
         const script = document.createElement("script");
         script.src = `js/pages/${page}.js`;
+        script.type = "module";
         main.appendChild(script);
       }
 

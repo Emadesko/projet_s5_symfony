@@ -34,7 +34,7 @@ class Dette
 
     #[ORM\ManyToOne(inversedBy: 'dettes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?client $client = null;
+    private ?Client $client = null;
 
     /**
      * @var Collection<int, Paiement>
@@ -121,12 +121,12 @@ class Dette
         return $this;
     }
 
-    public function getClient(): ?client
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(?client $client): static
+    public function setClient(?Client $client): static
     {
         $this->client = $client;
 

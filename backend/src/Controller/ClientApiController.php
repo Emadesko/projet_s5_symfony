@@ -21,23 +21,44 @@ class ClientApiController extends AbstractController
         $limit = 6;
         $clients=[];
         $telephone=$request->get('telephone',"");
-        $clients = $clientRepository->paginateClients($page,$limit,$telephone);
-        $count = $clients->count();
+        $paginator = $clientRepository->paginateClients($page,$limit,$telephone);
+        $count = $paginator->count();
         $maxPage = ceil($count / $limit);
+        foreach ($paginator as $key => $value) {
+            $clients[]= [
+                'id' => $value->getId(),
+                'surname' => $value->getSurname(),
+                'telephone' => $value->getTelephone(),
+                'adresse' => $value->getAdresse(),
+                'compte' => $value->getCompte()?[]:null,
+            ];
+        }
         return $this->json([
             'datas' => $clients,
-            'telephone' => $telephone,
-            'page' => $page,
-            'maxPage' => $maxPage,
+            // 'telephone' => $telephone,
+            // 'page' => $page,
+            // 'maxPage' => $maxPage,
         ]);
     }
 
-    #[Route('/client/api/telephone', name: 'app_client_api')]
+    #[Route('/client/api/telephone', name: 'client_telephone_api')]
     public function getClientByTelephone(ClientRepository $clientRepository,Request $request): JsonResponse
     {
         $telephone=$request->get('telephone',"");
+        $object = $clientRepository->findOneBySomeField("telephone", $telephone);
+        // if ($object){
+        //     $client = [
+        //         'id' => $object->getId(),
+        //        'surname' => $object->getSurname(),
+        //         'telephone' => $object->getTelephone(),
+        //         'adresse' => $object->getAdresse(),
+        //         'compte' => $object->getCompte(),
+        //     ];
+        // }else{
+        //     $client = null;
+        // }
         return $this->json([
-            'datas' => $clientRepository->findOneBySomeField("telephone", $telephone),
+            'datas' => $object,
             'telephone' => $telephone,
         ]);
     }

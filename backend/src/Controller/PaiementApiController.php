@@ -13,7 +13,7 @@ class PaiementApiController extends AbstractController
     public function index(PaiementRepository $paiementRepository): JsonResponse
     {
         return $this->json([
-            'datas' => $paiementRepository->findAll(),
+            'datas' => $paiementRepository->find(1),
         ]);
     }
 }

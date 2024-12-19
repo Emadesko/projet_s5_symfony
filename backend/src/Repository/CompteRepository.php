@@ -34,6 +34,16 @@ class CompteRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
+    public function findOneBySomeField(string $field, string $value): ?Compte
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.'.$field.' = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
     //    /**
     //     * @return Compte[] Returns an array of Compte objects
     //     */

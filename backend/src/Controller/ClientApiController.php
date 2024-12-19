@@ -86,6 +86,39 @@ class ClientApiController extends AbstractController
             'telephone' => $telephone,
         ]);
     }
+    #[Route('/client/api/surname', name: 'client_surname_api')]
+    public function getClientBySurname(ClientRepository $clientRepository,Request $request, DetteRepository $detteRepository): JsonResponse
+    {
+        $surname=$request->get('surname',"");
+        $value = $clientRepository->findOneBySomeField("surname", $surname);
+        if ($value){
+            $client = [
+                'id' => $value->getId(),
+                'surname' => $value->getSurname(),
+                'telephone' => $value->getTelephone(),
+                'adresse' => $value->getAdresse(),
+                'compte' => $value->getCompte()?[
+                        'id' => $value->getCompte()->getId(),
+                        'role' => $value->getCompte()->getRole()->name,
+                        'isActive' => $value->getCompte()->isActive(),
+                        'email' => $value->getCompte()->getEmail(),
+                        'password' => $value->getCompte()->getPassword(),
+                        'prenom' => $value->getCompte()->getPrenom(),
+                        'nom' => $value->getCompte()->getNom(),
+                        'login' => $value->getCompte()->getLogin()
+                    ]:null,
+                'montant' => $detteRepository->getTotalMontant($value->getId()),
+                'montantVerser' => $detteRepository->getTotalMontantVerser($value->getId())
+                
+            ];
+        }else{
+            $client = null;
+        }
+        return $this->json([
+            'datas' => $client,
+            'surname' => $surname,
+        ]);
+    }
 
     #[Route('/client/store', name: 'client.store',methods:['GET','POST'])]
     public function store(Request $request,EntityManagerInterface $entityManager): JsonResponse
@@ -110,6 +143,31 @@ class ClientApiController extends AbstractController
             'client' => $client,
             'satatus' => "success",
         ]);
+    }
+
+    #[Route('/client/create', name: 'app_client_create')]
+    public function createClient(Request $request,EntityManagerInterface $entityManager)
+    {
+        $datas = json_decode($request->getContent(), true);
+        $client=new Client();
+        $client->setTelephone($datas["telephone"]);
+        // $client->setSurname($datas["surname"]);
+        // $client->setAdresse($datas["adresse"]);
+
+        // if ($datas["checked"]!=0) {
+        //         $compte=new Compte();
+        //         $compte->setLogin($datas["login"]);
+        //         $compte->setNom($datas["nom"]);
+        //         $compte->setPrenom($datas["prenom"]);
+        //         $compte->setPassword($datas["password"]);
+        //         $client->setCompte($compte);
+        //     }
+        // $entityManager->persist($client);
+        // $entityManager->flush(); 
+        return new JsonResponse([
+            'status' => 'error',
+            'message' => 'Données manquantes ou invalides'
+        ], 400);
     }
     
 

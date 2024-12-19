@@ -8,28 +8,26 @@ export default class ApiService {
       return await response.json();
   }
 
-  async postData(endpoint, body) {
+  async postData(endpoint, donnees) {
     try {
-      // Faire une requête POST à l'API
       const response = await fetch(`${this.baseURL}${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(donnees),
       });
 
-      // Vérifier si la réponse est correcte
       if (!response.ok) {
-        throw new Error('Erreur lors de l\'envoi des données');
+          throw new Error(`Erreur : ${response.status}`);
       }
 
-      // Extraire les données JSON de la réponse
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Erreur:', error);
-      throw error;
+      const resultat = await response.json();
+      console.log('Réponse du serveur :', resultat);
+      return resultat; // Retourne la réponse JSON
+    } catch (erreur) {
+        console.error('Erreur lors de l\'envoi des données :', erreur);
+        throw erreur; // Propagation de l'erreur
     }
   }
 }

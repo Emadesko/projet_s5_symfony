@@ -8,6 +8,7 @@ const selectedTelephone = document.getElementById("selectedTelephone")
 const selectedTelephoneBtn = document.getElementById("selectedTelephoneBtn")
 const tbodyDette = document.getElementById("tbodyDette")
 
+const form = document.querySelector('form');
 const creerCompteToggle = document.getElementById('creerCompte');
 const accountFields = document.getElementById('accountFields');
 const toggleLabel = document.getElementById('toggleLabel');
@@ -131,5 +132,96 @@ creerCompteToggle?.addEventListener('change', function () {
     } else {
         accountFields.classList.add('hidden');
         toggleLabel.textContent = 'Non';
+    }
+});
+
+form.addEventListener('submit', async function (e) {
+    e.preventDefault(); // Empêche l'envoi du formulaire
+
+    // Récupère tous les champs obligatoires
+    const fieldsToValidate = [
+        document.getElementById('surnom'),
+        document.getElementById('telephone'),
+        document.getElementById('adresse')
+    ];
+
+    // Ajoute les champs supplémentaires si la case à cocher est activée
+    if (creerCompteToggle.checked) {
+        fieldsToValidate.push(
+            document.getElementById('prenom'),
+            document.getElementById('nom'),
+            document.getElementById('login'),
+            document.getElementById('email'),
+            document.getElementById('password')
+        );
+    }
+
+    let isValid = true;
+
+    // Vérifie chaque champ
+    fieldsToValidate.forEach(field => {
+        const errorMessageId = `${field.id}-error`;
+        let errorMessage = document.getElementById(errorMessageId);
+
+        // Crée dynamiquement un élément de message d'erreur si nécessaire
+        if (!errorMessage) {
+            errorMessage = document.createElement('span');
+            errorMessage.id = errorMessageId;
+            errorMessage.className = 'text-red-500 text-sm mt-1';
+            field.parentNode.appendChild(errorMessage);
+        }
+
+        if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add('border-red-500'); // Ajoute une bordure rouge pour signaler l'erreur
+            errorMessage.textContent = 'Ce champ est obligatoire.';
+        } else {
+            field.classList.remove('border-red-500');
+            errorMessage.textContent = ''; // Efface le message d'erreur si le champ est valide
+        }
+    });
+
+    if (isValid) {
+        let ok=true;
+        const telephone = document.getElementById('telephone');
+        datas= await getElements("client/api/tel?telephone=" +telephone.value.trim());
+        if (datas.datas) {
+            ok=false;
+            telephone.classList.add('border-red-500')
+        }else{
+            telephone.classList.remove('border-red-500')
+        }
+        const surnom = document.getElementById('surnom');
+        datas= await getElements("client/api/surname?surname=" +surnom.value.trim());
+        if (datas.datas) {
+            ok=false;
+            surnom.classList.add('border-red-500')
+        }else{
+            surnom.classList.remove('border-red-500')
+        }
+        if (creerCompteToggle.checked) {
+            const email = document.getElementById('email');
+            datas= await getElements("compte/api/email?email=" +email.value.trim());
+            if (datas.datas) {
+                ok=false;
+                email.classList.add('border-red-500')
+            }else{
+                email.classList.remove('border-red-500')
+            }
+            const login = document.getElementById('login');
+            datas= await getElements("compte/api/login?login=" +login.value.trim());
+            if (datas.datas) {
+                ok=false;
+                login.classList.add('border-red-500')
+            }else{
+                login.classList.remove('border-red-500')
+            }
+        }
+        if (ok) {
+            let x= await apiService.postData("client/create",{"telephone" : 1})
+            console.log(x);
+            alert(ok)
+            
+        }
     }
 });

@@ -16,59 +16,33 @@ class ArticleApiController extends AbstractController
     public function index(ArticleRepository $articleRepository, Request $request): JsonResponse
     {
         $page = $request->query->getInt('page', 1);
-        $limit = 6;
+        $limit = 1;
         $articles=[];
         $libelle=$request->get('libelle',"");
-        $articles = $articleRepository->paginateArticles($page,$limit,$libelle);
-        $count = $articles->count();
+        $dispo=$request->get('dispo',"");
+        $qteStock=$request->get('qteStock',10);
+        $paginator = $articleRepository->paginateArticles($page,$limit,$libelle,$dispo,$qteStock);
+        $count = $paginator->count();
         $maxPage = ceil($count / $limit);
+        foreach ($paginator as $key => $value) {
+            $articles[]= [
+                'id' => $value->getId(),
+                'libelle' => $value->getLibelle(),
+                'prix' => $value->getPrix(),
+                'qteStock' => $value->getQteStock(),
+                'reference' => $value->getReference(),
+            ];
+        }
         return $this->json([
             'datas' => $articles,
             'libelle' => $libelle,
+            'dispo' => $dispo,
+            'qteStock' => $qteStock,
             'page' => $page,
             'maxPage' => $maxPage,
         ]);
     }
 
-    #[Route('/article/api/rupture', name: 'app_article_rupture')]
-    public function getArticlesRupture(ArticleRepository $articleRepository, Request $request): JsonResponse
-    {
-        $page = $request->query->getInt('page', 1);
-        $limit = 6;
-        $articles=[];
-        $libelle=$request->get('libelle',"");
-        $qteStock=$request->get('qteStock',10);
-        $articles = $articleRepository->articlesRupture($page,$limit,$qteStock,$libelle);
-        $count = $articles->count();
-        $maxPage = ceil($count / $limit);
-        return $this->json([
-            'datas' => $articles,
-            'qteStock' => $qteStock,
-            'libelle' => $libelle,
-            'page' => $page,
-            'maxPage' => $count,
-        ]);
-    }
-
-    #[Route('/article/api/dispo', name: 'app_article_df')]
-    public function getArticlesDispo(ArticleRepository $articleRepository, Request $request): JsonResponse
-    {
-        $page = $request->query->getInt('page', 1);
-        $limit = 6;
-        $articles=[];
-        $libelle=$request->get('libelle',"");
-        $qteStock=$request->get('qteStock',10);
-        $articles = $articleRepository->articlesDispo($page,$limit,$qteStock,$libelle);
-        $count = $articles->count();
-        $maxPage = ceil($count / $limit);
-        return $this->json([
-            'datas' => $articles,
-            'qteStock' => $qteStock,
-            'libelle' => $libelle,
-            'page' => $page,
-            'maxPage' => $count,
-        ]);
-    }
 
     #[Route('/article/create', name: 'app_article_create')]
     public function createUser(Request $request)

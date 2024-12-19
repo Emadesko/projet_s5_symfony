@@ -36,7 +36,7 @@ class Detail
 
     #[ORM\ManyToOne(inversedBy: 'details')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?dette $dette = null;
+    private ?Dette $dette = null;
 
     public function __construct(){
         $this->createAt = new \DateTime;

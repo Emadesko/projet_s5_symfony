@@ -1,4 +1,3 @@
-document.addEventListener("DOMContentLoaded",function(){
     const article = document.getElementById('article');
     const client = document.getElementById('client');
     const dashboard = document.getElementById('dashboard');
@@ -14,7 +13,7 @@ document.addEventListener("DOMContentLoaded",function(){
         main.innerHTML = html;
 
         const script = document.createElement("script");
-        script.src = `js/pages/${page}.js`;
+        script.src = `js/pages/${page}.js?reload=${new Date().getTime()}`;
         script.type = "module";
         main.appendChild(script);
       }
@@ -26,5 +25,3 @@ document.addEventListener("DOMContentLoaded",function(){
     dette.addEventListener('click',() => loadContent('dette'));
     compte.addEventListener('click',() => loadContent('compte'));
 
-
-});

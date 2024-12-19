@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div id="clientInfo" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Nouveau Client Section -->
     <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-2xl font-bold mb-6 text-blue-800"><i class="fas fa-user-plus mr-2"></i>Nouveau
@@ -29,7 +29,7 @@
             <div class="mb-4 flex items-center">
                 <span class="toggle-label mr-2">Créer un compte :</span>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="creerCompte" class="sr-only" onchange="toggleAccountFields()">
+                    <input type="checkbox" id="creerCompte" class="sr-only">
                     <span class="slider"></span>
                 </label>
                 <span class="toggle-label ml-2 text-gray-700 font-semibold" id="toggleLabel">Non</span>
@@ -75,31 +75,28 @@
         <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-blue-800">
             <i class="fas fa-search-dollar mr-2"></i>Suivi de Dette
         </h2>
-        <form class="mb-4 flex flex-col sm:flex-row gap-2" method="POST" action="#">
+        <div class="mb-4 flex flex-col sm:flex-row gap-2">
             <input type="hidden" name="action" value="searchClient">
             <label for="telephone" class="w-full sm:w-auto flex-shrink-0 font-semibold text-gray-700 flex items-center">
                 <i class="fas fa-phone mr-2"></i>Tél :
             </label>
             <input type="tel" id="selectedTelephone" name="telephone" class="input-shadow flex-grow p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-            <button type="submit" class="btn bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 mt-2 sm:mt-0">
+            <span id="noClient" class="text-red-500"></span>
+            <button id="selectedTelephoneBtn" class="btn bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 mt-2 sm:mt-0">
                 <i class="fas fa-search mr-2"></i>OK
             </button>
-        </form>
+        </div>
         <!-- Boutons organisés et centrés -->
         <div class="mb-4 flex flex-wrap justify-start gap-4 sm:gap-2">
             <button class="bg-red-500 text-white px-4 py-2 rounded flex items-center">
                 <i class="fas fa-user mr-2"></i>Infos
             </button>
-            <a href="../Boutiquier/listDettesClient.html" class="flex">
-                <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center">
-                    <i class="fas fa-file-invoice-dollar mr-2"></i>Dettes
-                </button>
-            </a>
-            <a href="../Boutiquier/nouvelleDette.html" class="flex">
-                <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center">
-                    <i class="fas fa-plus mr-2"></i>Nouvelle
-                </button>
-            </a>
+            <button id="dettesBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center">
+                <i class="fas fa-file-invoice-dollar mr-2"></i>Dettes
+            </button>
+            <button id="newDetteBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded flex items-center">
+                <i class="fas fa-plus mr-2"></i>Nouvelle
+            </button>
         </div>
         <!-- Résultats de la recherche -->
         <div class="flex flex-col items-center">
@@ -114,22 +111,16 @@
             <div class="w-full flex flex-col sm:flex-row justify-between gap-4">
                 <div class="space-y-4 flex-grow">
                     <div class="mb-2">
-                        <label for="nom" class="block font-semibold text-gray-700 mb-1">
-                            <i class="fas fa-user mr-2"></i>Nom :
-                        </label>
-                        <input type="text" id="selectedNom" name="nom" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div class="mb-2">
                         <label for="prenom" class="block font-semibold text-gray-700 mb-1">
-                            <i class="fas fa-user mr-2"></i>Prénom :
+                            <i class="fas fa-user mr-2"></i>Surnom :
                         </label>
-                        <input type="text" id="selectedPrenom" name="prenom" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" readonly id="selectedSurnom" name="surnom" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="mb-2">
                         <label for="adresse" class="block font-semibold text-gray-700 mb-1">
                             <i class="fas fa-map-marker-alt mr-2"></i>Adresse :
                         </label>
-                        <input type="text" id="selectedAdresse" name="adresse" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" readonly id="selectedAdresse" name="adresse" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
 
@@ -140,6 +131,64 @@
                         <img src="" alt="Code QR" class="w-full h-full object-contain">
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dettesClient" class="hidden">
+    <div class="bg-white rounded-lg shadow p-4 w-full">
+        <div class="p-4 sm:p-6 md:p-8 mb-6" style="background: linear-gradient(to right, #2b6cb0, #2d3748)">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                <!-- Carte Total des Dettes -->
+                <div class="stat-card rounded-lg p-4 sm:p-6 text-white font-semibold text-lg sm:text-xl md:text-2xl flex flex-col justify-between">
+                    <div class="flex flex-col justify-center space-y-4">
+                        <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-8">
+                            <img src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2" alt="User Photo" class="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full">
+                            <div class="flex flex-col justify-between h-full pb-4 text-center sm:text-left">
+                                <p id="clientSurnom">Surnom: </p>
+                                <p id="clientNom">Nom complet: </p>
+                                <p id="clientTel">Tel: </p>
+                            </div>
+                        </div>
+                        <p id="clientEmail" class="email text-center sm:text-left">Email: </p>
+                    </div>
+                </div>
+
+                <!-- Carte Demandes en Cours -->
+                <div class="stat-card rounded-lg p-4 sm:p-6 font-semibold text-white text-lg sm:text-xl md:text-3xl flex flex-col justify-between">
+                    <p>Montant Total: <span id="montant"></span> FCFA</p>
+                    <p>Montant Versé: <span id="montantVerser"></span> FCFA</p>
+                    <p>Montant Restant: <span id="montantRestant"></span> FCFA</p>
+                </div>
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Liste des dettes</h2>
+                <div>
+                    <button id="nonSole" class="bg-red-500 text-white px-4 py-2 rounded mr-2">Non soldées</button>
+                    <button id="solde" class="bg-blue-500 text-white px-4 py-2 rounded mt-2 sm:mt-0">Soldées</button>
+                </div>
+            </div>
+            <table class="w-full">
+                <thead class="bg-blue-500 text-white">
+                    <tr>
+                        <th class="p-2 text-center">DATE</th>
+                        <th class="p-2 text-center">MONTANT</th>
+                        <th class="p-2 text-center">VERSER</th>
+                        <th class="p-2 text-center">RESTANT</th>
+                        <th class="p-2 text-center">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyDette">
+                    <tr>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="w-full h-12 flex justify-center mt-4 flex-wrap">
+            <div id="pagination" class="flex justify-center mt-4 mb-2 sm:mb-0">
             </div>
         </div>
     </div>

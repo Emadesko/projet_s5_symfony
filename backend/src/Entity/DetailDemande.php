@@ -36,7 +36,7 @@ class DetailDemande
 
     #[ORM\ManyToOne(inversedBy: 'detailDemandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?demande $damande = null;
+    private ?Demande $damande = null;
 
     public function __construct()
     {

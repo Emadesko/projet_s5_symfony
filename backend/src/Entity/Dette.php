@@ -61,12 +61,12 @@ class Dette
         return $this->id;
     }
 
-    public function getCreateAt(): ?\DateTimeImmutable
+    public function getCreateAt(): ?\DateTime
     {
         return $this->createAt;
     }
 
-    public function setCreateAt(\DateTimeImmutable $createAt): static
+    public function setCreateAt(\DateTime $createAt): static
     {
         $this->createAt = $createAt;
 

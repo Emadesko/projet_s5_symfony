@@ -17,13 +17,21 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    public function paginateArticles(int $page, int $limit,string $value): Paginator
+    public function paginateArticles(int $page, int $limit,string $libelle,string $dispo,int $qte): Paginator
     {
 
         $query = $this->createQueryBuilder('a');
-        if ($value != "") {
-            $query->where('a.libelle like :value')
-                ->setParameter('value',$value.'%');
+        if ($libelle != "") {
+            $query->where('a.libelle like :libelle')
+                ->setParameter('libelle',$libelle.'%');
+        }
+        if ($dispo == "oui") {
+            $query->andWhere('a.qteStock > :qte')
+                ->setParameter('qte',$qte);
+        }
+        if ($dispo == "non") {
+            $query->andWhere('a.qteStock <= :qte')
+                ->setParameter('qte',$qte);
         }
         $query->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)
@@ -31,39 +39,6 @@ class ArticleRepository extends ServiceEntityRepository
             ->getQuery();
         return new Paginator($query);
     }
-
-    public function articlesRupture(int $page, int $limit,int $qte, string $libelle): Paginator
-    {
-        $query = $this->createQueryBuilder('a')
-            ->where('a.qteStock <= :qte');
-        if ($libelle != "") {
-            $query->andWhere('a.libelle like :libelle')
-                ->setParameter('libelle',$libelle.'%');
-        }
-        $query->setParameter('qte',$qte)
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->orderBy('a.id', 'ASC')
-            ->getQuery();
-        return new Paginator($query);
-    }
-
-    public function articlesDispo(int $page, int $limit,int $qte, string $libelle): Paginator
-    {
-        $query = $this->createQueryBuilder('a')
-            ->where('a.qteStock > :qte');
-        if ($libelle != "") {
-            $query->andWhere('a.libelle like :libelle')
-                ->setParameter('libelle',$libelle.'%');
-        }
-        $query->setParameter('qte',$qte)
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
-            ->orderBy('a.id', 'ASC')
-            ->getQuery();
-        return new Paginator($query);
-    }
-
     //    /**
     //     * @return Article[] Returns an array of Article objects
     //     */

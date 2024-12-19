@@ -14,11 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ClientApiController extends AbstractController
 {
-    #[Route('/client/api', name: 'app_client_api')]
-    public function index(ClientRepository $clientRepository,Request $request): JsonResponse
+    #[Route('/client/api', name: 'app_client_api' , methods:['GET'])]
+    public function index(ClientRepository $clientRepository,Request $request,DetteRepository $detteRepository): JsonResponse
     {
         $page = $request->query->getInt('page', 1);
-        $limit = 6;
+        $limit = 1;
         $clients=[];
         $telephone=$request->get('telephone',"");
         $paginator = $clientRepository->paginateClients($page,$limit,$telephone);
@@ -30,61 +30,60 @@ class ClientApiController extends AbstractController
                 'surname' => $value->getSurname(),
                 'telephone' => $value->getTelephone(),
                 'adresse' => $value->getAdresse(),
-                'compte' => $value->getCompte()?[]:null,
+                'compte' => $value->getCompte()?[
+                        'id' => $value->getCompte()->getId(),
+                        'role' => $value->getCompte()->getRole()->name,
+                        'isActive' => $value->getCompte()->isActive(),
+                        'email' => $value->getCompte()->getEmail(),
+                        'password' => $value->getCompte()->getPassword(),
+                        'prenom' => $value->getCompte()->getPrenom(),
+                        'nom' => $value->getCompte()->getNom(),
+                        'login' => $value->getCompte()->getLogin()
+                    ]:null,
+                'montant' => $detteRepository->getTotalMontant($value->getId()),
+                'montantVerser' => $detteRepository->getTotalMontantVerser($value->getId())
+                
             ];
         }
         return $this->json([
-            'datas' => $clients,
-            // 'telephone' => $telephone,
-            // 'page' => $page,
-            // 'maxPage' => $maxPage,
-        ]);
-    }
-
-    #[Route('/client/api/telephone', name: 'client_telephone_api')]
-    public function getClientByTelephone(ClientRepository $clientRepository,Request $request): JsonResponse
-    {
-        $telephone=$request->get('telephone',"");
-        $object = $clientRepository->findOneBySomeField("telephone", $telephone);
-        // if ($object){
-        //     $client = [
-        //         'id' => $object->getId(),
-        //        'surname' => $object->getSurname(),
-        //         'telephone' => $object->getTelephone(),
-        //         'adresse' => $object->getAdresse(),
-        //         'compte' => $object->getCompte(),
-        //     ];
-        // }else{
-        //     $client = null;
-        // }
-        return $this->json([
-            'datas' => $object,
+            'datas' =>$clients,
             'telephone' => $telephone,
-        ]);
-    }
-
-    
-    #[Route('/client/dettes/{idClient}', name: 'client_dettes')]
-    public function clientDettes(Request $request,ClientRepository $clientRepository,DetteRepository $detteRepository,int $idClient): JsonResponse
-    {
-        $page = $request->query->getInt('page', 1);
-        $statut = $request->query->getString('statut', 2);
-        $limit = 4;
-        $client=$clientRepository->find($idClient);
-        $montant=$detteRepository->getTotalMontant($client->getId());
-        $montantVerser=$detteRepository->getTotalMontantVerser($client->getId());
-        $dettes=$detteRepository->paginateDettes($page,$limit,$client->getId(),$statut);
-        $count = $dettes->count();
-        $maxPage = ceil($count / $limit);
-        return $this->json([
-            'client' => $client,
-            'dettes' => $dettes,
-            'total'=>$montant,
-            'verser'=>$montantVerser,
-            'du'=>$montant-$montantVerser,
-            'statut'=>$statut,
             'page' => $page,
             'maxPage' => $maxPage,
+        ]);
+    }
+
+    #[Route('/client/api/tel', name: 'client_telephone_api')]
+    public function getClientByTelephone(ClientRepository $clientRepository,Request $request, DetteRepository $detteRepository): JsonResponse
+    {
+        $telephone=$request->get('telephone',"");
+        $value = $clientRepository->findOneBySomeField("telephone", $telephone);
+        if ($value){
+            $client = [
+                'id' => $value->getId(),
+                'surname' => $value->getSurname(),
+                'telephone' => $value->getTelephone(),
+                'adresse' => $value->getAdresse(),
+                'compte' => $value->getCompte()?[
+                        'id' => $value->getCompte()->getId(),
+                        'role' => $value->getCompte()->getRole()->name,
+                        'isActive' => $value->getCompte()->isActive(),
+                        'email' => $value->getCompte()->getEmail(),
+                        'password' => $value->getCompte()->getPassword(),
+                        'prenom' => $value->getCompte()->getPrenom(),
+                        'nom' => $value->getCompte()->getNom(),
+                        'login' => $value->getCompte()->getLogin()
+                    ]:null,
+                'montant' => $detteRepository->getTotalMontant($value->getId()),
+                'montantVerser' => $detteRepository->getTotalMontantVerser($value->getId())
+                
+            ];
+        }else{
+            $client = null;
+        }
+        return $this->json([
+            'datas' => $client,
+            'telephone' => $telephone,
         ]);
     }
 
